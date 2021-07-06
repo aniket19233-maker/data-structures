@@ -401,6 +401,30 @@ public:
 			rank[y]++;
 		}
 	}
+	struct comp{
+		template <typename T>
+		bool operator()(const T& l, const T& r){
+			return l.second <= r.second;
+		}
+	};
+	vector<pair<pair<int, int>, int>> KruskalAlgo(map<pair<int, int>, int> &mp){
+		vector<pair<pair<int, int>, int>> mst;
+		vector<int> parent(this->vertices);
+		vector<int> rank(this->vertices);
+		makeSet(parent, rank);
+		set<pair<pair<int, int>, int>, comp> S(mp.begin(), mp.end());
+		while(mst.size()!=this->vertices-1){
+			pair<pair<int,int>, int> p = *S.begin();
+			S.erase(S.begin());
+			int x = get(p.first.first, parent);
+			int y = get(p.first.second, parent);		
+			if(x!=y){
+				mst.push_back(p);
+				Union(x, y, parent, rank);
+			}
+		}
+		return mst;
+	}
 
 };
 
