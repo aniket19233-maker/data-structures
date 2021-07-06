@@ -375,22 +375,22 @@ public:
 	}
 	//UNION FIND ALGORITHM
 	void makeSet(vector<int> &parent, vector<int> &rank){
-		for(int i=0;i<Universe.size()){
+		for(int i=0;i<parent.size();++i){
 			parent[i] = i;
 			rank[i] = 0;
 		}
 	}
 	//find Function
-	int find(int k, vector<int> parent){
+	int get(int k, vector<int> &parent){
 		if(parent[k]!=k){
-			parent[k] = find(parent[k], parent);
+			parent[k] = get(parent[k], parent);
 		}
 		return parent[k];
 	}
 	//Union function
 	void Union(int a, int b, vector<int> &parent, vector<int> &rank){
-		int x = find(a, parent);
-		int y = find(b, parent);
+		int x = get(a, parent);
+		int y = get(b, parent);
 		if(x==y) return;
 		if(rank[x]>rank[y]){
 			parent[y] = x;
@@ -667,22 +667,31 @@ public:
 
 int main(){
 	init();
-	int n , e;
-	cin>>n>>e;
-	GraphAdj g(n, e);
-	map<pair<int, int>, int> mp;
-	for(int i=0;i<e;++i){
-		int x, y, w;
-		cin>>x>>y>>w;
-		g.adjL[x].push_back(y);
-		mp[{x, y}] = w;
+	int n , m;
+	cin>>n>>m;
+	vector<int> parent(n);
+	vector<int> rank(n);
+	GraphAdj g(n);
+	g.makeSet(parent, rank);
+	while(m--){
+	    string s;
+	    cin>>s;
+	    int x;
+	    cin>>x;
+	    int y;
+	    cin>>y;
+	    x--;
+	    y--;
+	    if(s=="union"){
+	        g.Union(x, y, parent, rank);
+	    }else{
+	        int a = g.get(x, parent);
+	        int b = g.get(y, parent);
+	        if(a==b){
+	            cout<<"YES\n";
+	        }else cout<<"NO\n";
+	    }
 	}
-	int ans = g.shortPathKedgeDirWtdG(0, 3, mp, 2);
-	cout<<ans<<'\n';
-	// vector<pair<int, int>> v = g.dijkstra(0, mp);
-	// for(pair<int, int> p : v){
-	// 	cout<<p.first<<" "<<p.second<<'\n';
-	// }
 	return 0;
 }
 // 0 0
